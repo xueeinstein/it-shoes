@@ -1,10 +1,12 @@
 '''
 Prepare dataset
+-------------------
+
+Resize training and test images and store into LMDB
 '''
 import os
 import cv2
 import lmdb
-import caffe
 from caffe.io import array_to_datum
 from caffe.proto import caffe_pb2
 
@@ -34,9 +36,10 @@ def generate_lmdb(img_label):
         for img in images:
             if img[-4:] in ['.jpg', '.png']:
                 # prepare data
+                # NOTE: maybe rotate image and re-train classifier
                 im = cv2.imread(os.path.join(images_path, img))
                 im = cv2.resize(im, (config.img_height, config.img_width))
-                datum = array_to_datum(im, img_label)
+                datum = array_to_datum(im)
                 keystr = '{:0>8d}'.format(item_id)
                 lmdb_txn.put(keystr, datum.SerializeToString())
 
