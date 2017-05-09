@@ -13,5 +13,5 @@ pos_images_lmdb = config.get('paths', 'pos_images_lmdb')
 neg_images_lmdb = config.get('paths', 'neg_images_lmdb')
 
 # size of train and test images
-img_height = config.get('image', 'height')
-img_width = config.get('image', 'width')
+img_height = config.getint('image', 'height')
+img_width = config.getint('image', 'width')
