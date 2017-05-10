@@ -27,3 +27,12 @@ def pyramid(img, downscale=1.5, min_size=(30, 30)):
             break
 
         yield img
+
+
+def draw_detections(img, detections):
+    for det in detections:
+        cv2.rectangle(img, (det[0], det[1]), (det[2], det[3]),
+                      color=(0, 0, 0), thickness=2)
+
+    cv2.imshow('detection', img)
+    cv2.waitKey(0)
