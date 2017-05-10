@@ -6,8 +6,8 @@ import cv2
 
 def sliding_window(img, window_size, step_size):
     """slide a window across the image and yield windows data iteratively"""
-    for y in xrange(0, img.shape[0], step_size):
-        for x in xrange(0, img.shape[1], step_size):
+    for y in xrange(0, img.shape[0], step_size[1]):
+        for x in xrange(0, img.shape[1], step_size[0]):
             # yield current window
             # NOTE: this window may be smaller than expected window_size
             yield (x, y, img[y:y + window_size[1], x:x + window_size[0]])
