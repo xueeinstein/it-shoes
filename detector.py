@@ -11,6 +11,7 @@ from sklearn.externals import joblib
 
 import config
 import helper
+from nms import non_max_suppression
 from extract_features import compute_feature
 
 
@@ -37,29 +38,30 @@ def detect(img, feature_type, downscale=1.5, visualize=False):
 
             # prediction
             pred = classifier.predict(feature)
-            confidence = classifier.decision_function(feature)
+            confidence = classifier.decision_function(feature)[0]
             if pred == 1:
                 print 'Detection at location ({}, {})'.format(x, y)
                 print 'scale level: {}, confidence: {}'.format(scale_level,
                                                                confidence)
 
                 # TODO: potential bug for coordinate restore
-                # attr_vec: [x, y, width, height]
-                attr_vec = np.array([x, y, min_window_size[0],
-                                     min_window_size[1]])
+                # attr_vec: [x1, y1, x2, y2]
+                attr_vec = np.array([x, y, min_window_size[0] + x,
+                                     min_window_size[1] + y])
                 curr_scale_dets.append((attr_vec, confidence))
 
                 expand_rate = downscale ** scale_level
-                attr_vec = np.around(attr_vec * expand_rate).astype(int)
+                attr_vec = np.around(attr_vec * expand_rate).astype('int')
+                # detection: ([x1, y1, x2, y2], confidence)
                 detections.append((attr_vec, confidence))
 
             # visualize: draw current sliding withdow
             # and detections at this scale
+            # TODO: show confidence on the bounding box
             if visualize:
                 im_copy = scaled_img.copy()
-                for attrs, _ in curr_scale_dets:
-                    cv2.rectangle(im_copy, (attrs[0], attrs[1]),
-                                  (attrs[0] + attrs[2], attrs[1] + attrs[3]),
+                for det, _ in curr_scale_dets:
+                    cv2.rectangle(im_copy, (det[0], det[1]), (det[2], det[3]),
                                   color=(0, 0, 0), thickness=2)
 
                 cv2.rectangle(im_copy, (x, y),
@@ -71,11 +73,21 @@ def detect(img, feature_type, downscale=1.5, visualize=False):
 
         scale_level += 1
 
+    # apply non-maximum suppression
+    # dets = np.array(detections)[:, :-1]
+    dets = np.array([i[0] for i in detections])
+    detections = non_max_suppression(dets)
+    if visualize:
+        im_copy = img.copy()
+        helper.draw_detections(im_copy, detections)
+
     return detections
 
 
 if __name__ == '__main__':
-    test_img = '/home/billxue/Datasets/shoes7k/detection_data/r3/P70502-162009.jpg'
+    # test_img = '/home/billxue/Datasets/shoes7k/detection_data/r3/P70502-162009.jpg'
+    # test_img = '/home/billxue/Datasets/shoes7k/detection_data/r3/P70502-162039.jpg'
+    test_img = '/home/billxue/Datasets/shoes7k/detection_data/r3/P70502-162105.jpg'
     img = cv2.imread(test_img)
     img = rgb2gray(img)
     detect(img, 'HOG', visualize=True)
