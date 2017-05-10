@@ -21,7 +21,7 @@ def generate_tr_te_data(data_type, ratio=0.75):
         csv_file = config.neg_features_csv
 
     data_frame = pd.read_csv(csv_file)
-    feature_mat = data_frame.values
+    feature_mat = data_frame.values[:, 1:]
     np.random.shuffle(feature_mat)
     split = int(feature_mat.shape[0] * ratio)
 
