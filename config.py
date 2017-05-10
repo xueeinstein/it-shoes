@@ -2,6 +2,7 @@
 config
 '''
 import ConfigParser as cp
+import json
 
 
 config = cp.RawConfigParser()
@@ -18,3 +19,7 @@ model_path = config.get('paths', 'model_path')
 # size of train and test images
 img_height = config.getint('image', 'height')
 img_width = config.getint('image', 'width')
+
+# parameters for detector
+# step_size: (w, h)
+step_size = json.loads(config.get('detector', 'step_size'))
