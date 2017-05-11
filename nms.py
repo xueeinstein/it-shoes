@@ -39,8 +39,8 @@ def non_max_suppression(boxes, overlap_threshold=.5):
         # for the end of the bounding box
         xx1 = np.maximum(x1[i], x1[idxs[:last]])
         yy1 = np.maximum(y1[i], y1[idxs[:last]])
-        xx2 = np.maximum(x2[i], x2[idxs[:last]])
-        yy2 = np.maximum(y2[i], y2[idxs[:last]])
+        xx2 = np.minimum(x2[i], x2[idxs[:last]])
+        yy2 = np.minimum(y2[i], y2[idxs[:last]])
 
         w = np.maximum(0, xx2 - xx1 + 1)
         h = np.maximum(0, yy2 - yy1 + 1)
