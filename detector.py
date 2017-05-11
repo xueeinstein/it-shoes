@@ -15,7 +15,7 @@ from nms import non_max_suppression
 from extract_features import compute_feature
 
 
-def detect(img, feature_type, downscale=1.5, visualize=False):
+def detect(img, feature_type, downscale=1.5, visualize=False, apply_nms=True):
     """use sliding window and pyramid to detect object"""
     detections = []  # detected candidates
     min_window_size = (config.img_width, config.img_height)
@@ -72,6 +72,11 @@ def detect(img, feature_type, downscale=1.5, visualize=False):
                 cv2.waitKey(20)
 
         scale_level += 1
+
+    if not apply_nms:
+        # withour non-maximum suppression, return with confidence
+        # can be used for hard-negative mining and graphcut segmentation
+        return detections
 
     # apply non-maximum suppression
     # dets = np.array(detections)[:, :-1]

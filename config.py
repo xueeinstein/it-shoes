@@ -14,6 +14,8 @@ pos_images_lmdb = config.get('paths', 'pos_images_lmdb')
 neg_images_lmdb = config.get('paths', 'neg_images_lmdb')
 pos_features_csv = config.get('paths', 'pos_features_path')
 neg_features_csv = config.get('paths', 'neg_features_path')
+det_images_path = config.get('paths', 'det_images_path')
+det_annotation_path = config.get('paths', 'det_annotation_path')
 model_path = config.get('paths', 'model_path')
 
 # size of train and test images
