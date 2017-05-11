@@ -37,8 +37,8 @@ def detect(img, feature_type, downscale=1.5, visualize=False):
             feature = compute_feature(im_window, feature_type)
 
             # prediction
-            pred = classifier.predict(feature)
-            confidence = classifier.decision_function(feature)[0]
+            pred = classifier.predict([feature])[0]
+            confidence = classifier.decision_function([feature])[0]
             if pred == 1:
                 print 'Detection at location ({}, {})'.format(x, y)
                 print 'scale level: {}, confidence: {}'.format(scale_level,
