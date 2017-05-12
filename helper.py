@@ -1,6 +1,7 @@
 '''
 Helper functions
 '''
+import numpy as np
 import cv2
 
 
@@ -36,3 +37,15 @@ def draw_detections(img, detections):
 
     cv2.imshow('detection', img)
     cv2.waitKey(0)
+
+
+def find_biggest_window(detections):
+    """find the biggest bounding window from detections matrix"""
+    x1 = detections[:, 0]
+    y1 = detections[:, 1]
+    x2 = detections[:, 2]
+    y2 = detections[:, 3]
+    area = (x2 - x1 + 1) * (y2 - y1 + 1)
+    idx = np.argmax(area)
+
+    return detections[idx]
