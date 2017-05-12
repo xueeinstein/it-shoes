@@ -24,11 +24,11 @@ def sample_hard_negatives(img, feature_type, annotations, downscale=1.5,
     detections = detect(img, feature_type, downscale, apply_nms=False)
     batch = []
     for det, _ in detections:
-        # TODO: potential bug if the min_window_size not equal to
-        # the size of training image size
         x_min = max(0, det[0] - 1)
         y_min = max(0, det[1] - 1)
-        im_window = img[x_min:det[2], y_min:det[3]]
+        im_window = img[x_min:det[2] - 1, y_min:det[3] - 1]
+        if im_window.shape != (config.img_height, config.img_width):
+            continue
         area = (det[2] - det[0] + 1) * (det[3] - det[1] + 1)
         xx1 = max(det[0], annotations[3])
         yy1 = max(det[1], annotations[4])
