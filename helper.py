@@ -65,3 +65,16 @@ def find_biggest_window(detections):
     idx = np.argmax(area)
 
     return detections[idx]
+
+
+def get_overlap(box1, box2):
+    """compute the overlap of box1 and box2 comparing to box1 area"""
+    area = (box1[2] - box1[0] + 1.0) * (box1[3] - box1[1] + 1.0)
+    xx1 = max(box1[0], box2[0])
+    yy1 = max(box1[1], box2[1])
+    xx2 = min(box1[2], box2[2])
+    yy2 = min(box1[3], box2[3])
+    w = max(0, xx2 - xx1)
+    h = max(0, yy2 - yy1)
+
+    return w * h / area

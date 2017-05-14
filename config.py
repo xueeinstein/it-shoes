@@ -26,3 +26,8 @@ img_width = config.getint('image', 'width')
 # step_size: (w, h)
 step_size = json.loads(config.get('detector', 'step_size'))
 jobs = config.getint('detector', 'jobs')
+
+# evaluation
+eval_images_path = config.get('evaluation', 'eval_images_path')
+eval_annotation_path = config.get('evaluation', 'eval_annotation_path')
+eval_res_path = config.get('evaluation', 'eval_res_path')
