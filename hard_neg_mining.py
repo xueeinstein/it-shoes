@@ -11,7 +11,7 @@ import pandas as pd
 from skimage.color import rgb2gray
 
 import config
-from detector import detect
+from detector import detect_faster
 from extract_features import compute_feature
 
 
@@ -21,12 +21,12 @@ def sample_hard_negatives(img, feature_type, annotations, downscale=1.5,
     and save their features into csv"""
     # img: is the grayscale image
     # annotations: name, h, w, x1, y1, x2, y2, shoe_type, orientation
-    detections = detect(img, feature_type, downscale, apply_nms=False)
+    detections = detect_faster(img, feature_type, downscale, apply_nms=False)
     batch = []
     for det, _ in detections:
         x_min = max(0, det[0] - 1)
         y_min = max(0, det[1] - 1)
-        im_window = img[x_min:det[2] - 1, y_min:det[3] - 1]
+        im_window = img[y_min:det[3] - 1, x_min:det[2] - 1]
         if im_window.shape != (config.img_height, config.img_width):
             continue
         area = (det[2] - det[0] + 1) * (det[3] - det[1] + 1)
