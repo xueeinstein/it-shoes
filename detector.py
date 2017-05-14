@@ -83,7 +83,7 @@ def detect(img, feature_type, downscale=1.5, visualize=False, apply_nms=True):
 
     # apply non-maximum suppression
     dets = np.array([i[0] for i in detections])
-    detections = non_max_suppression(dets)
+    detections = non_max_suppression(dets, only_one=True)
     if visualize:
         im_copy = img.copy()
         helper.draw_detections(im_copy, detections)
@@ -147,7 +147,7 @@ def detect_faster(img, feature_type, downscale=1.5, visualize=False,
 
     # apply non-maximum suppression
     dets = np.array([i[0] for i in detections])
-    detections = non_max_suppression(dets)
+    detections = non_max_suppression(dets, only_one=True)
     if visualize:
         im_copy = img.copy()
         helper.draw_detections(im_copy, detections)

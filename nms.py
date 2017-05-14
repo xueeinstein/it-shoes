@@ -9,7 +9,7 @@ rewrite to python
 import numpy as np
 
 
-def non_max_suppression(boxes, overlap_threshold=.5):
+def non_max_suppression(boxes, overlap_threshold=.5, only_one=False):
     """apply non-maximum suppression algorithm to remove some bounding boxes"""
     # boxes is matrix of box: [x1, y1, x2, y2]
     if len(boxes) == 0:
@@ -52,4 +52,22 @@ def non_max_suppression(boxes, overlap_threshold=.5):
         to_delete = np.where(overlap > overlap_threshold)[0]
         idxs = np.delete(idxs, np.concatenate(([last], to_delete)))
 
-    return boxes[pick].astype('int')
+    res = boxes[pick].astype('int')
+    if only_one:
+        res = merge_to_one(res)
+
+    return res
+
+
+def merge_to_one(boxes):
+    """merge multiple boxes into single box"""
+    x1 = boxes[:, 0]
+    y1 = boxes[:, 1]
+    x2 = boxes[:, 2]
+    y2 = boxes[:, 3]
+    xx1 = np.min(x1)
+    yy1 = np.min(y1)
+    xx2 = np.max(x2)
+    yy2 = np.max(y2)
+
+    return np.array([[xx1, yy1, xx2, yy2]])
