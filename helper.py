@@ -14,6 +14,22 @@ def sliding_window(img, window_size, step_size):
             yield (x, y, img[y:y + window_size[1], x:x + window_size[0]])
 
 
+def sliding_window_faster(img, window_size, step_size):
+    """silde a window across the image and
+    return the standard windows tensor with xy"""
+    standard_windows = []
+    x_vec, y_vec = [], []
+    for y in xrange(0, img.shape[0], step_size[1]):
+        for x in xrange(0, img.shape[1], step_size[0]):
+            window = img[y:y + window_size[1], x:x + window_size[0]]
+            if window.shape == window_size:
+                x_vec.append(x)
+                y_vec.append(y)
+                standard_windows.append(window)
+
+    return x_vec, y_vec, standard_windows
+
+
 def pyramid(img, downscale=1.5, min_size=(30, 30)):
     """compute image pyramid through down sampling"""
     # min_size: (w, h)

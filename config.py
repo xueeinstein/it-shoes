@@ -25,3 +25,4 @@ img_width = config.getint('image', 'width')
 # parameters for detector
 # step_size: (w, h)
 step_size = json.loads(config.get('detector', 'step_size'))
+jobs = config.getint('detector', 'jobs')
