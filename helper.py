@@ -22,7 +22,7 @@ def sliding_window_faster(img, window_size, step_size):
     for y in xrange(0, img.shape[0], step_size[1]):
         for x in xrange(0, img.shape[1], step_size[0]):
             window = img[y:y + window_size[1], x:x + window_size[0]]
-            if window.shape == window_size:
+            if window.shape == (window_size[1], window_size[0]):
                 x_vec.append(x)
                 y_vec.append(y)
                 standard_windows.append(window)
