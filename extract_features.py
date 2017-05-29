@@ -63,7 +63,7 @@ def extract_features(img_label, feature_type):
                 is_first = False
             else:
                 data_frame.to_csv(feature_file, mode='a', header=False)
-            print 'saved', item_id + 1, 'image feature'
+            print('saved {} image feature'.format(item_id + 1))
 
         item_id += 1
 
@@ -76,10 +76,10 @@ def extract_features(img_label, feature_type):
         else:
             data_frame.to_csv(feature_file, mode='a', header=False)
 
-        print 'saved', item_id + 1, 'image feature'
-        print 'save', feature_file
+        print('saved {} image feature'.format(item_id + 1))
+        print('saved {}'.format(feature_file))
 
 
 if __name__ == '__main__':
-    # extract_features(POS, 'HOG')
+    extract_features(POS, 'HOG')
     extract_features(NEG, 'HOG')
