@@ -5,11 +5,15 @@ Train classifier from feature csv files
 '''
 import numpy as np
 import pandas as pd
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
 from sklearn.externals import joblib
-from sklearn.model_selection import KFold
+from sklearn.cross_validation import KFold
 from sklearn.grid_search import GridSearchCV
 from sklearn.learning_curve import learning_curve
+import matplotlib
+
+# Force matplotlib to not use any Xwindows backend.
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 import config
@@ -133,38 +137,39 @@ def generate_tr_te_data(ratio=0.75):
             te_mat[te_idxs], te_labels[te_idxs])
 
 
-def train_svm_classifier(debug=False):
+def train_svm_classifier(debug=False, n_jobs=-1):
     """train SVM classifier"""
     print('Start to load data')
     tr_mat, tr_labels, te_mat, te_labels = generate_tr_te_data()
     print('Data loaded')
     print('Training a linear SVM model')
-    estimator = SVC(kernel='linear')
-    k_fold = KFold(n_splits=10)
-    gammas = np.logspace(-6, -1, 10)
+    estimator = LinearSVC()
+    k_fold = KFold(tr_mat.shape[0], n_folds=5)
     Cs = np.logspace(-10, 0, 10)
-    clf = GridSearchCV(estimator=estimator, n_splits=10, n_jobs=-1,
-                       param_grid=dict(gamma=gammas, C=Cs))
+    clf = GridSearchCV(estimator=estimator, cv=k_fold, n_jobs=n_jobs,
+                       param_grid=dict(C=Cs), verbose=10)
     clf.fit(tr_mat, tr_labels)
 
     if debug:
         # debug with learning curve
-        title = 'Learning Curves(SVM, linear kernel, $C=%.6f$, $\gamma=%.6f$)'\
-                % (clf.best_estimator_.C, clf.best_estimator_.gamma)
-        estimator = SVC(kernel='linear', C=clf.best_estimator_.C,
-                        gamma=clf.best_estimator_.gamma)
+        title = 'Learning Curves(SVM, linear kernel, $C=%.6f$)'\
+                % clf.best_estimator_.C
+        estimator = LinearSVC(C=clf.best_estimator_.C)
         plot_learning_curve(estimator, title, tr_mat, tr_labels, cv=k_fold,
-                            n_jobs=-1)
+                            n_jobs=n_jobs)
         plt.savefig('learning_curve.png')
 
     print('Testing linear SVM model')
     print('Evaluate on test set')
+    clf = LinearSVC(C=clf.best_estimator_.C)
+    clf.fit(tr_mat, tr_labels)
     score = clf.score(te_mat, te_labels)
     print('score: {}'.format(score))
+    print(clf.get_params())
 
     joblib.dump(clf, config.model_path)
     print('Classifier saved to {}'.format(config.model_path))
 
 
 if __name__ == '__main__':
-    train_svm_classifier(debug=True)
+    train_svm_classifier(debug=True, n_jobs=20)
